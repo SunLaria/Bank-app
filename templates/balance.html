@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block Title %}Sun Bank - Balance{% endblock %}
+
+{% block Content %}
+<div id="user-balance">Balance: {{ request.user.bank_account.balance }}</div>
+
+<table class="transactions-history-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Receiver</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Balance</th>
+            <th>Date</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if request.user.bank_account.transaction_set.all|length > 0 %}
+            {% for transaction in request.user.bank_account.transaction_set.all %}
+                <tr>
+                    <td>{{ transaction.transaction_id }}</td>
+                    <td>{{ transaction.to_account_number }}</td>
+                    <td>
+                        {% if transaction.t_type == "sent" or transaction.t_type == "withdraw" %}
+                            -{{ transaction.amount }}
+                        {% else %}
+                            +{{ transaction.amount }}
+                        {% endif %}
+                    </td>
+                    <td>{{ transaction.t_type }}</td>
+                    <!-- <td>{{ transaction.current_balance }}</td> -->
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.description }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">No Transactions Yet</td>
+            </tr>   
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

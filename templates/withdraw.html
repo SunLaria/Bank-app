@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load filters %}
+
+{% block Title %}Sun Bank - Withdraw{% endblock %}
+
+{% block Content %}
+    <div id="user-balance">Balance: {{ request.user.bank_account.balance }}</div>
+
+
+    <table class="transactions-history-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Balance</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if request.user.bank_account.transaction_set.all|transactions_filter:"withdraw"|length > 0 %}
+                {% for transaction in request.user.bank_account.transaction_set.all|transactions_filter:"withdraw"%}
+                    <tr>
+                        <td>{{ transaction.transaction_id }}</td>
+                        <td>-{{ transaction.amount }}</td>
+                        <td>{{ transaction.date }}</td>
+                        <!-- <td>{{ transaction.current_balance }}</td> -->
+                        <td>{{ transaction.description }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">No Withdraws Yet</td>
+                </tr>   
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block Title %}Sun Bank - Register{% endblock %}
+
+{% block Content %}
+<form action="{% url 'register' %}" method="POST">
+ {% csrf_token %}
+ {{ register_form }}
+ <input type="submit" value="Register">
+</form>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+        </div>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

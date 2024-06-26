@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block Title %}Sun Bank - Login{% endblock %}
+
+{% block Content %}
+<form action="{% url 'login' %}" method="POST">
+ {% csrf_token %}
+ {{ login_form }}
+ <input type="submit" value="Login">
+</form>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+        </div>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
