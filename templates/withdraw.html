@@ -16,7 +16,6 @@
                 <th>ID</th>
                 <th>Amount</th>
                 <th>Date</th>
-                <th>Balance</th>
                 <th>Description</th>
             </tr>
         </thead>
@@ -27,7 +26,6 @@
                         <td>{{ transaction.transaction_id }}</td>
                         <td>-{{ transaction.amount }}</td>
                         <td>{{ transaction.date }}</td>
-                        <!-- <td>{{ transaction.current_balance }}</td> -->
                         <td>{{ transaction.description }}</td>
                     </tr>
                 {% endfor %}

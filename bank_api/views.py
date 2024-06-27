@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from .functions import random_transaction_id
 
 
+# {"amount": 112, "description": "withdraw description"}
+
+
 @login_required(login_url='/login/')
 def withdraw(request):
     if request.method == 'POST':
@@ -13,25 +16,28 @@ def withdraw(request):
         #  check if amount is valid
         if request_json.get("amount", 0) > 0:
             # check if account have enough money to withdraw
-            if Bank_Account.objects.get(user=request.user).balance >= request_json["amount"]:
+            user_bank_account = request.user.bank_account
+            # user_bank_account = Bank_Account.objects.get(user=request.user)
+            if user_bank_account.balance >= request_json["amount"]:
                 # decreasing account balance
-                Bank_Account.objects.get(
-                    user=request.user).balance -= request_json["amount"]
+                user_bank_account.balance -= request_json["amount"]
+                user_bank_account.save()
                 # create Transaction record for user
                 Transaction.objects.create(transaction_id=random_transaction_id(),
-                                           account=request.user,
+                                           account=request.user.bank_account,
                                            amount=request_json["amount"],
-                                           current_balance=request.user.balance,
+                                           #    current_balance=request.user.bank_account.balance,
                                            t_type="withdraw",
                                            description=request_json["description"])
-                return "Withdrawal Successfully"
+                return JsonResponse({"result": "Withdrawal Successfully"})
             else:
-                return "Insufficient Balance"
-        else:
-            return "Invalid Amount"
-    else:
-        return "POST Request Only!"
+                return JsonResponse({"result": "Insufficient Balance"})
 
+        else:
+            return JsonResponse({"result": "Invalid Amount"})
+
+
+# {"amount": 112, "description": "deposit description"}
 
 @login_required(login_url='/login/')
 def deposit(request):
@@ -40,20 +46,23 @@ def deposit(request):
         #  check if amount is valid
         if request_json.get("amount", 0) > 0:
             # Increase Account balance
-            Bank_Account.objects.get(
-                user=request.user).balance += request_json["amount"]
+            # user_account = Bank_Account.objects.get(user=request.user)
+            user_bank_account = request.user.bank_account
+            user_bank_account.balance += request_json["amount"]
+            user_bank_account.save()
             #  create Transaction record for user
             Transaction.objects.create(transaction_id=random_transaction_id(),
-                                       account=request.user,
+                                       account=request.user.bank_account,
                                        amount=request_json["amount"],
-                                       current_balance=request.user.balance,
+                                       #    current_balance=request.user.bank_account.balance,
                                        t_type="deposit",
                                        description=request_json["description"])
-            return "Deposit Successfully"
+            return JsonResponse({"result": "Deposit Successfully"})
         else:
-            return "Invalid Amount"
-    else:
-        return "POST Request Only!"
+            return JsonResponse({"result": "Invalid Amount"})
+
+
+# {"amount": 12121, "to_account_number": 123123, "description": "transfer description"}
 
 
 @login_required(login_url='/login/')
@@ -61,23 +70,29 @@ def transfer(request):
     if request.method == 'POST':
         request_json = json.loads(request.body)
         #  check if amount is valid
-        if request_json.get("amount", 0) > 0:
+        if request_json["amount"] > 0:
             #  check if account have enough money to transfer
-            if Bank_Account.objects.get(user=request.user).balance >= request_json["amount"]:
+            user_bank_account = request.user.bank_account
+            if user_bank_account.balance >= request_json["amount"]:
                 #  check if account exist
                 if Bank_Account.objects.filter(account_number=request_json["to_account_number"]).exists():
                     #  check if receiver account is not sender account
-                    if request.user.account_number != request_json["to_account_number"]:
+                    if request.user.bank_account.account_number != request_json["to_account_number"]:
                         # decrease sender money balance
-                        Bank_Account.objects.get(
-                            user=request.user).balance -= request_json["amount"]
+                        # Bank_Account.objects.get(
+                        #     user=request.user).balance -= request_json["amount"]
+                        user_bank_account.balance -= request_json["amount"]
+                        user_bank_account.save()
                         # increase receiver money balance
-                        Bank_Account.objects.get(
-                            account_number=request_json["to_account_number"]).balance += request_json["amount"]
+                        receiver_bank_account = Bank_Account.objects.get(
+                            account_number=request_json["to_account_number"])
+                        receiver_bank_account.balance += request_json["amount"]
+                        receiver_bank_account.save()
                         # create Transaction record for sender and receiver
                         transaction_id = random_transaction_id()
                         Transaction.objects.create(transaction_id=transaction_id,
-                                                   account=request.user,
+                                                   account=request.user.bank_account,
+                                                   from_account_number=request.user.bank_account.account_number,
                                                    to_account_number=request_json["to_account_number"],
                                                    amount=request_json["amount"],
                                                    t_type="sent",
@@ -86,18 +101,18 @@ def transfer(request):
                                                    account=Bank_Account.objects.get(
                                                        account_number=request_json["to_account_number"]),
                                                    from_account_number=request.user.bank_account.account_number,
+                                                   to_account_number=request_json["to_account_number"],
                                                    amount=request_json["amount"],
                                                    t_type="received",
                                                    description=request_json["description"])
 
-                        return "Transfer Successfully"
+                        return JsonResponse({"result": "Transfer Successfully"})
                     else:
-                        return "Sender Account and Receiver Account Cannot be Same"
+                        return JsonResponse({"result": "Sender Account and Receiver Account Cannot be Same"})
+
                 else:
-                    return "Receiver Account Does Not Exist"
+                    return JsonResponse({"result": "Receiver Account Does Not Exist"})
             else:
-                return "Insufficient Balance"
+                return JsonResponse({"result": "Insufficient Balance"})
         else:
-            return "Invalid Amount"
-    else:
-        return "POST Request Only!"
+            return JsonResponse({"result": "Invalid Amount"})

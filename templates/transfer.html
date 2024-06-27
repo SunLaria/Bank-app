@@ -13,7 +13,8 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Receiver</th>
+            <th>From</th>
+            <th>To</th>
             <th>Amount</th>
             <th>Type</th>
             <th>Date</th>
@@ -25,6 +26,7 @@
         {% for transaction in request.user.bank_account.transaction_set.all|transactions_filter:"transfer" %}
                 <tr>
                     <td>{{ transaction.transaction_id }}</td>
+                    <td>{{ transaction.from_account_number }}</td>
                     <td>{{ transaction.to_account_number }}</td>
                     <td>
                         {% if transaction.t_type == "sent" %}

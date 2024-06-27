@@ -11,10 +11,8 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Receiver</th>
             <th>Amount</th>
             <th>Type</th>
-            <th>Balance</th>
             <th>Date</th>
             <th>Description</th>
         </tr>
@@ -24,16 +22,15 @@
             {% for transaction in request.user.bank_account.transaction_set.all %}
                 <tr>
                     <td>{{ transaction.transaction_id }}</td>
-                    <td>{{ transaction.to_account_number }}</td>
                     <td>
                         {% if transaction.t_type == "sent" or transaction.t_type == "withdraw" %}
-                            -{{ transaction.amount }}
+                            -
                         {% else %}
-                            +{{ transaction.amount }}
+                            +
                         {% endif %}
+                        {{ transaction.amount }}
                     </td>
                     <td>{{ transaction.t_type }}</td>
-                    <!-- <td>{{ transaction.current_balance }}</td> -->
                     <td>{{ transaction.date }}</td>
                     <td>{{ transaction.description }}</td>
                 </tr>
