@@ -5,8 +5,11 @@
 {% block Title %}Sun Bank - Home{% endblock %}
 
 {% block Content %}
-<div id="user-greeting">Hello {{ user|title  }}</div>
-<div id="user-account-number">Account Number: {{ request.user.bank_account.account_number }}</div>
-<div id="user-balance">Balance: {{ request.user.bank_account.balance }}</div>
+<div id="account-info">
+    <div id="user-greeting">Hello {{ user|title  }}</div>
+    |
+    <div id="user-account-number">Account Number: {{ request.user.bank_account.account_number }}</div>
+</div>
+<div id="home-user-balance">Balance: {{ request.user.bank_account.balance }}$</div>
 
 {% endblock %}

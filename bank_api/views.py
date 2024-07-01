@@ -6,9 +6,6 @@ from django.contrib.auth.decorators import login_required
 from .functions import random_transaction_id
 
 
-# {"amount": 112, "description": "withdraw description"}
-
-
 @login_required(login_url='/login/')
 def withdraw(request):
     if request.method == 'POST':
@@ -37,8 +34,6 @@ def withdraw(request):
             return JsonResponse({"result": "Invalid Amount"})
 
 
-# {"amount": 112, "description": "deposit description"}
-
 @login_required(login_url='/login/')
 def deposit(request):
     if request.method == 'POST':
@@ -60,9 +55,6 @@ def deposit(request):
             return JsonResponse({"result": "Deposit Successfully"})
         else:
             return JsonResponse({"result": "Invalid Amount"})
-
-
-# {"amount": 12121, "to_account_number": 123123, "description": "transfer description"}
 
 
 @login_required(login_url='/login/')

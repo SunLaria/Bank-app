@@ -5,8 +5,8 @@
 {% block Title %}Sun Bank - Balance{% endblock %}
 
 {% block Content %}
-<div id="user-balance">Balance: {{ request.user.bank_account.balance }}</div>
-
+<div id="user-balance">Balance: {{ request.user.bank_account.balance }}$</div>
+<div class="table-div">
 <table class="transactions-history-table">
     <thead>
         <tr>
@@ -42,5 +42,6 @@
         {% endif %}
     </tbody>
 </table>
+</div>
 
 {% endblock %}
