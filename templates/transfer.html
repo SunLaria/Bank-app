@@ -8,11 +8,20 @@
 
 {% block Content %}
 <div id="user-balance">Balance: {{ request.user.bank_account.balance }}$</div>
+<div id="action-form">
+    <label for="to-account">To:</label>
+    <input type="number" id="to-account" placeholder="Account Number">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" placeholder="Amount">
+    <label for="description">Description:</label>
+    <input type="text" id="description" placeholder="Description">
+    <button onclick="transferAction()" class="button">Transfer</button>
+    <div id="action-message">{{ msg }}</div>
 <div class="table-div">
 <table class="transactions-history-table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>Transaction ID</th>
             <th>From</th>
             <th>To</th>
             <th>Amount</th>
@@ -22,22 +31,22 @@
         </tr>
     </thead>
     <tbody>
-        {% if request.user.bank_account.transaction_set.all|transactions_filter:"transfer"|length > 0 %}
-        {% for transaction in request.user.bank_account.transaction_set.all|transactions_filter:"transfer" %}
+        {% if request.user.bank_account.transaction_set.all|transactions_type_filter:"transfer"|length > 0 %}
+        {% for transaction in request.user.bank_account.transaction_set.all|transactions_type_filter:"transfer" %}
                 <tr>
                     <td>{{ transaction.transaction_id }}</td>
                     <td>{{ transaction.from_account_number }}</td>
                     <td>{{ transaction.to_account_number }}</td>
                     <td>
                         {% if transaction.t_type == "sent" %}
-                            -{{ transaction.amount }}
+                            - {{ transaction.amount }}
                         {% else %}
-                            +{{ transaction.amount }}
+                            + {{ transaction.amount }}
                         {% endif %}
                     </td>
-                    <td>{{ transaction.t_type }}</td>
+                    <td>{{ transaction.t_type|title }}</td>
                     <td>{{ transaction.date }}</td>
-                    <td>{{ transaction.description }}</td>
+                    <td>{{ transaction.description|title }}</td>
                 </tr>
             {% endfor %}
         {% else %}
@@ -48,4 +57,25 @@
     </tbody>
 </table>
 </div>
+{% endblock %}
+{% block JavaScript %}
+<script>
+    function transferAction(){
+        let amountElement = document.getElementById("amount");
+        let descriptionElement = document.getElementById("description");
+        let ToAccountElement = document.getElementById("to-account")
+        axios.post('/api/transfer/', {amount: Number(amountElement.value), to_account_number:ToAccountElement.value, description: descriptionElement.value},{headers: {
+            'X-CSRFTOKEN': getCSRFToken()}})
+        .then((response)=>{
+            console.log(response.data);    
+            amountElement.value = ""
+            descriptionElement.value = ""
+            let currentUrl = window.location.href;
+            let cleanURL = currentUrl.split('?')[0]
+            const urlWithParams = new URL(cleanURL);
+            urlWithParams.searchParams.append("msg", response.data.result)
+            window.location.replace(urlWithParams)
+            })
+    }
+</script>
 {% endblock %}

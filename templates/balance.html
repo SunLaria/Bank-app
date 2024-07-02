@@ -10,7 +10,7 @@
 <table class="transactions-history-table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>Transaction ID</th>
             <th>Amount</th>
             <th>Type</th>
             <th>Date</th>
@@ -30,9 +30,9 @@
                         {% endif %}
                         {{ transaction.amount }}
                     </td>
-                    <td>{{ transaction.t_type }}</td>
+                    <td>{{ transaction.t_type|title }}</td>
                     <td>{{ transaction.date }}</td>
-                    <td>{{ transaction.description }}</td>
+                    <td>{{ transaction.description|title }}</td>
                 </tr>
             {% endfor %}
         {% else %}

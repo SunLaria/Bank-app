@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load filters %}
+
 {% block Title %}Sun Bank - Home{% endblock %}
 
 {% block Content %}
@@ -11,5 +13,9 @@
     <div id="user-account-number">Account Number: {{ request.user.bank_account.account_number }}</div>
 </div>
 <div id="home-user-balance">Balance: {{ request.user.bank_account.balance }}$</div>
-
+<div id="month-statistics-tab">
+    <div id="month-statistics-tab-header">Month Statistics:</div>
+    <div id="month-statistics-tab-income">Income: +{{ request.user.bank_account.transaction_set.all|filter_income_expense:"income" }}$</div>
+    <div id="month-statistics-tab-expense">Expense: -{{ request.user.bank_account.transaction_set.all|filter_income_expense:"expense" }}$</div>
+</div>
 {% endblock %}

@@ -27,8 +27,6 @@ class Transaction(models.Model):
     from_account_number = models.IntegerField(blank=True, null=True)
     to_account_number = models.IntegerField(blank=True, null=True)
     amount = models.DecimalField(default=0, max_digits=20, decimal_places=2)
-    # current_balance = models.DecimalField(
-    #     max_digits=20, decimal_places=2, blank=True)
     date = models.DateField(auto_now_add=True)
     t_type = models.CharField(max_length=8, choices=[(
         "deposit", "Deposit"), ("withdraw", "Withdraw"), ("sent", "Sent"), ("received", "Received")], default="Null")

@@ -7,7 +7,7 @@
     <title>{% block Title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="{% static 'js/account_actions.js' %}"></script>
+    <script src="{% static 'js/functions.js' %}"></script>
 </head>
 <body>
     <div id="root">
@@ -30,5 +30,6 @@
         {% block Content %}{% endblock %}
         </div>
     </div>
+    {% block JavaScript %}{% endblock %}
 </body>
 </html>

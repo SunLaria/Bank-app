@@ -8,24 +8,31 @@
 
 {% block Content %}
     <div id="user-balance">Balance: {{ request.user.bank_account.balance }}$</div>
+    <div id="action-form">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" placeholder="Amount">
+        <label for="description">Description:</label>
+        <input type="text" id="description" placeholder="Description">
+        <button onclick="withdrawAction()" class="button">Withdraw</button>
+        <div id="action-message">{{ msg }}</div>
     <div class="table-div">
     <table class="transactions-history-table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Transaction ID</th>
                 <th>Amount</th>
                 <th>Date</th>
                 <th>Description</th>
             </tr>
         </thead>
         <tbody>
-            {% if request.user.bank_account.transaction_set.all|transactions_filter:"withdraw"|length > 0 %}
-                {% for transaction in request.user.bank_account.transaction_set.all|transactions_filter:"withdraw"%}
+            {% if request.user.bank_account.transaction_set.all|transactions_type_filter:"withdraw"|length > 0 %}
+                {% for transaction in request.user.bank_account.transaction_set.all|transactions_type_filter:"withdraw"%}
                     <tr>
                         <td>{{ transaction.transaction_id }}</td>
-                        <td>-{{ transaction.amount }}</td>
+                        <td>- {{ transaction.amount }}</td>
                         <td>{{ transaction.date }}</td>
-                        <td>{{ transaction.description }}</td>
+                        <td>{{ transaction.description|title }}</td>
                     </tr>
                 {% endfor %}
             {% else %}
@@ -36,4 +43,24 @@
         </tbody>
     </table>
     </div>
+{% endblock %}
+{% block JavaScript %}
+<script>
+    function withdrawAction(){
+        let amountElement = document.getElementById("amount");
+        let descriptionElement = document.getElementById("description");
+        axios.post('/api/withdraw/', {amount: Number(amountElement.value), description: descriptionElement.value},{headers: 
+            {'X-CSRFTOKEN': getCSRFToken()}})
+        .then((response)=>{
+            console.log(response.data);    
+            amountElement.value = ""
+            descriptionElement.value = ""
+            let currentUrl = window.location.href;
+            let cleanURL = currentUrl.split('?')[0]
+            const urlWithParams = new URL(cleanURL);
+            urlWithParams.searchParams.append("msg", response.data.result)
+            window.location.replace(urlWithParams)
+            })
+    }
+</script>
 {% endblock %}

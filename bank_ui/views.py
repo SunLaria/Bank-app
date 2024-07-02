@@ -5,11 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import LoginForm
-from bank_api.models import Bank_Account, Transaction
+from bank_api.models import Bank_Account
 from .functions import random_bank_number
-
-
-# Create your views here.
 
 
 def login_view(request):
@@ -66,7 +63,7 @@ def home(request):
             return redirect('login')
 
 
-@ login_required(login_url="/login/")
+@login_required(login_url="/login/")
 def balance(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -75,28 +72,28 @@ def balance(request):
             return redirect('login')
 
 
-@ login_required(login_url="/login/")
+@login_required(login_url="/login/")
 def deposit(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return render(request, 'deposit.html')
+            return render(request, 'deposit.html', {"msg": request.GET.get('msg', "")})
         else:
             return redirect('login')
 
 
-@ login_required(login_url="/login/")
+@login_required(login_url="/login/")
 def withdraw(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return render(request, 'withdraw.html')
+            return render(request, 'withdraw.html', {"msg": request.GET.get('msg', "")})
         else:
             return redirect('login')
 
 
-@ login_required(login_url="/login/")
+@login_required(login_url="/login/")
 def transfer(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return render(request, 'transfer.html')
+            return render(request, 'transfer.html', {"msg": request.GET.get('msg', "")})
         else:
             return redirect('login')
