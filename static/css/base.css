@@ -155,6 +155,22 @@ td:first-child, th:first-child {
     align-items: center;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input{
+    border-radius: 5px;
+    padding: 4px;
+    border: solid 0.2px black;
+}
+
+input[type="submit"]{
+    margin-top: 10px;
+}
+
 #action-message{
     flex-shrink: 0;
 }
