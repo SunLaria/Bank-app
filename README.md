@@ -1,4 +1,4 @@
-# Sun - Bank App
+# Sun Bank - App
 
 - Bank Account Site - Deposit, Withdraw, Transfer to different Bank Account
 
@@ -36,5 +36,6 @@ Navigate to http://localhost:8000/ or http://127.0.0.1:8000/
 
 ## Additional Information
 
-- This Project Is Written in Python, JS, HTML, Jinja, CSS in Django FrameWork.
-- Build in Django Framework and using API Requests with Axios JS for account actions.
+- This Project Is Written in Python, JS, HTML, Jinja, CSS.
+- Build in Django Framework and using API Requests with Axios JS for Account actions.
+- Used WhiteNoise For Serving Static Files in Django FrameWork
