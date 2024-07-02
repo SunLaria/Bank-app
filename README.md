@@ -1,4 +1,4 @@
-# Sun Bank - App
+# Sun Bank
 
 - Bank Account Site - Deposit, Withdraw, Transfer to different Bank Account
 
